@@ -1,0 +1,25 @@
+{
+  "name": "parcel-mcp-server",
+  "version": "1.0.0",
+  "description": "Parcel MCP connector for deliveries, tracking histories, carrier discovery, and package intake.",
+  "author": { "name": "Oliver Ames", "email": "oliverames@gmail.com", "url": "https://github.com/oliverames" },
+  "homepage": "https://github.com/oliverames/parcel-mcp-server#readme",
+  "repository": "https://github.com/oliverames/parcel-mcp-server",
+  "keywords": ["mcp", "parcel", "delivery", "tracking", "shipping"],
+  "category": "productivity",
+  "mcpServers": "./mcp.json",
+  "interface": {
+    "displayName": "Parcel",
+    "shortDescription": "Track deliveries and add packages to Parcel.",
+    "longDescription": "A complete connector for Parcel's external API. Read recent and active deliveries with tracking events, find carrier codes, and add packages with descriptions, language, email, or postcode details.",
+    "developerName": "Oliver Ames",
+    "category": "Productivity",
+    "capabilities": ["MCP Servers", "Productivity"],
+    "websiteURL": "https://github.com/oliverames/parcel-mcp-server#readme",
+    "defaultPrompt": ["Show my active Parcel deliveries.", "Which package is out for delivery?", "Add this tracking number to Parcel with a description."],
+    "brandColor": "#3478F6",
+    "composerIcon": "../assets/icon.png",
+    "logo": "../assets/icon.png"
+  },
+  "license": "MIT"
+}

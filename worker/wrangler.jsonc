@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "parcel-mcp-connector",
+  "main": "src/index.js",
+  "workers_dev": false,
+  "compatibility_date": "2025-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [{ "pattern": "parcel.amesvt.com", "custom_domain": true }],
+  "kv_namespaces": [{ "binding": "OAUTH_KV", "id": "0735ffd0ecd34fa38005eee912527b04" }],
+  "durable_objects": { "bindings": [{ "name": "MCP_OBJECT", "class_name": "ParcelMCP" }, { "name": "OAUTH_STATE", "class_name": "OAuthTransientState" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ParcelMCP"] }, { "tag": "v2", "new_sqlite_classes": ["OAuthTransientState"] }],
+  "vars": {
+    "CONNECTOR_BASE_URL": "https://parcel.amesvt.com",
+    "MCP_ALLOWED_ORIGINS": "https://chatgpt.com,https://claude.ai,https://chat.mistral.ai,https://lechat.mistral.ai",
+    "PARCEL_MCP_NO_AUTOSTART": "1",
+    "PARCEL_DISABLE_AGENT_CONFIG_FALLBACK": "1"
+  }
+}

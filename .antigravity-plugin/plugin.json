@@ -1,0 +1,12 @@
+{
+  "name": "parcel-mcp-server",
+  "displayName": "Parcel",
+  "version": "1.0.0",
+  "description": "Parcel MCP connector for deliveries, tracking histories, carrier discovery, and package intake.",
+  "author": { "name": "Oliver Ames", "email": "oliverames@gmail.com", "url": "https://github.com/oliverames" },
+  "homepage": "https://github.com/oliverames/parcel-mcp-server#readme",
+  "repository": "https://github.com/oliverames/parcel-mcp-server",
+  "license": "MIT",
+  "keywords": ["mcp", "parcel", "delivery", "tracking", "shipping"],
+  "mcpServers": "./mcp_config.json"
+}

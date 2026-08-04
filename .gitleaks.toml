@@ -1,0 +1,9 @@
+title = "parcel-mcp-server gitleaks configuration"
+
+[allowlist]
+description = "Documentation placeholders"
+regexes = [
+  '''YOUR_API_KEY''',
+  '''your-parcel-api-key''',
+  '''op://Vault/Item/field'''
+]

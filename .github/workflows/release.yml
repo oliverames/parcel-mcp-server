@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22.x"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: npm run release:check:registry
+      - run: npm run smoke:list-tools
+      - run: npm run smoke:packed
+      - name: Verify tag matches package version
+        env: { TAG: "${{ github.ref_name }}" }
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          test "$TAG" = "$VERSION"
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+      - run: npm run build:mcpb
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.mcpb
+          generate_release_notes: true

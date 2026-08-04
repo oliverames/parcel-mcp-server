@@ -1,0 +1,38 @@
+{
+  "name": "@oliverames/mcp-server-for-parcel",
+  "version": "1.0.0",
+  "description": "MCP server for Parcel delivery tracking, with local stdio and hosted Cloudflare support",
+  "license": "MIT",
+  "author": "Oliver Ames",
+  "repository": { "type": "git", "url": "git+https://github.com/oliverames/parcel-mcp-server.git" },
+  "bugs": { "url": "https://github.com/oliverames/parcel-mcp-server/issues" },
+  "homepage": "https://github.com/oliverames/parcel-mcp-server#readme",
+  "keywords": ["mcp", "model-context-protocol", "parcel", "package-tracking", "delivery-tracking"],
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "mcp-server-for-parcel": "index.js",
+    "parcel-mcp-server": "index.js"
+  },
+  "files": ["index.js", "scripts/", "assets/icon.png", "docs/"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node index.js",
+    "deps:ensure": "node --input-type=module -e \"await import('@modelcontextprotocol/sdk/server/mcp.js')\" >/dev/null 2>&1 || npm ci --silent --no-audit --no-fund",
+    "pretest": "npm run deps:ensure",
+    "test": "node --test test/*.test.mjs worker/test/*.test.mjs",
+    "presmoke:list-tools": "npm run deps:ensure",
+    "smoke:list-tools": "node scripts/smoke-list-tools.mjs",
+    "presmoke:packed": "npm run deps:ensure",
+    "smoke:packed": "node scripts/smoke-packed-install.mjs",
+    "sync:plugin": "node scripts/sync-plugin-metadata.mjs",
+    "version": "npm run sync:plugin && git add index.js package.json .mcp.json .agents/plugins/marketplace.json .claude-plugin/marketplace.json .claude-plugin/plugin.json codex/.codex-plugin/plugin.json codex/.codex-plugin/mcp.json .hermes-plugin/marketplace.json .hermes-plugin/plugin.json .hermes-plugin/mcp.json .antigravity-plugin/marketplace.json .antigravity-plugin/plugin.json .antigravity-plugin/mcp_config.json",
+    "release:check": "node scripts/check-release-consistency.mjs",
+    "release:check:registry": "node scripts/check-release-consistency.mjs --registry",
+    "build:mcpb": "node scripts/build-mcpb.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  }
+}

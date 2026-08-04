@@ -1,0 +1,6 @@
+{
+  "name": "parcel-mcp-server",
+  "interface": { "displayName": "Parcel" },
+  "metadata": { "description": "Standalone Parcel delivery-tracking MCP connector marketplace", "version": "1.0.0" },
+  "plugins": [{ "name": "parcel-mcp-server", "version": "1.0.0", "source": { "source": "local", "path": "../../../codex" }, "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" }, "category": "productivity" }]
+}

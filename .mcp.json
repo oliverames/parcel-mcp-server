@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "parcel-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@oliverames/mcp-server-for-parcel@latest"],
+      "env": {
+        "PARCEL_API_KEY": "${PARCEL_API_KEY}",
+        "PARCEL_API_KEY_FILE": "${PARCEL_API_KEY_FILE}",
+        "PARCEL_OP_PATH": "${PARCEL_OP_PATH}",
+        "OP_SERVICE_ACCOUNT_TOKEN": "${OP_SERVICE_ACCOUNT_TOKEN}",
+        "PARCEL_ALLOW_WRITES": "1"
+      }
+    }
+  }
+}

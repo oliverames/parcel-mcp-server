@@ -1,0 +1,8 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["oliverames"],
+  "name": "parcel-mcp-server",
+  "description": "Parcel delivery tracking MCP server with complete external API coverage.",
+  "repository": "https://github.com/oliverames/parcel-mcp-server",
+  "packages": [{ "registry": "npm", "name": "@oliverames/mcp-server-for-parcel" }]
+}

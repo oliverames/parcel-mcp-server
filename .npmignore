@@ -1,0 +1,9 @@
+worker/
+test/
+.github/
+evaluation/
+codex/
+.agents/
+.claude-plugin/
+.hermes-plugin/
+.antigravity-plugin/

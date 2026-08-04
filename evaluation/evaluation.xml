@@ -1,0 +1,12 @@
+<evaluation>
+  <qa_pair><question>Among deliveries returned by the recent view, which tracking number has the latest final event date? Return only the tracking number.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>How many active deliveries currently have status code 4? Return only the integer.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>Find an active delivery whose carrier display name contains “Express.” Return only its carrier code.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>Which recent delivery has the greatest number of cached tracking events? Return only its description.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>For the most recently delivered package, return the event location from its final event.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>Among active deliveries with an expected timestamp, which is expected first? Return only its tracking number.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>Find a delivery that requires extra information and return only that extra-information value.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>How many carrier codes in the catalog contain the letters “dpd”? Return only the integer.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>Which active delivery has the longest description? Return only the description.</question><answer>Fixture-dependent</answer></qa_pair>
+  <qa_pair><question>Among recent deliveries with a failed attempt or exception, which has the newest event? Return only its tracking number.</question><answer>Fixture-dependent</answer></qa_pair>
+</evaluation>

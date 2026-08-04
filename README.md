@@ -83,6 +83,8 @@ The `worker/` directory provides an OAuth 2.1 protected Streamable HTTP endpoint
 
 The connector supports PKCE S256, dynamic client registration, optional write access, origin filtering, separate consent-signing and data-encryption keys, encrypted key deletion, and security headers. See [the deployment guide](docs/hosted-oauth-connector.md).
 
+The production deployment at `parcel.amesvt.com` is private. Cloudflare stores an allowlist containing only the SHA-256 hash of Oliver Ames' Parcel API key, so authorization attempts using any other Parcel key are rejected.
+
 ## Development and verification
 
 ```bash

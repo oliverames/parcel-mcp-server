@@ -31,7 +31,7 @@ npm test
 npm run deploy
 ```
 
-Optional `ALLOWED_PARCEL_KEY_HASHES` is a comma-separated list of lowercase SHA-256 hashes. When set, only those Parcel API keys can authorize the connector.
+`ALLOWED_PARCEL_KEY_HASHES` is a comma-separated list of lowercase SHA-256 hashes. Set it for every private deployment so only approved Parcel API keys can authorize the connector. The production deployment at `parcel.amesvt.com` contains only Oliver Ames' key hash.
 
 ## Live verification
 

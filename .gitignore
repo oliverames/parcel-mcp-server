@@ -6,3 +6,4 @@ worker/node_modules/
 .dev.vars
 .wrangler/
 coverage/
+worker/dist/

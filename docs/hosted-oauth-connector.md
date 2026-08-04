@@ -15,8 +15,10 @@ The connector uses separate `COOKIE_ENCRYPTION_KEY` and `DATA_ENCRYPTION_KEY` se
 ## Provision and deploy
 
 ```bash
+cd /path/to/parcel-mcp-server
+npm ci
+npm ci --prefix worker
 cd worker
-npm install
 npx wrangler kv namespace create PARCEL_OAUTH_KV
 ```
 

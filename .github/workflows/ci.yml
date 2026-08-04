@@ -48,6 +48,7 @@ jobs:
         with: { node-version: "22.x", cache: npm }
       - run: npm ci --no-audit --no-fund
       - run: npm run smoke:list-tools
+      - run: npm run smoke:live-tool
       - run: npm run smoke:packed
 
   live-contract:

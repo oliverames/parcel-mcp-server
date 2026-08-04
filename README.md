@@ -89,6 +89,7 @@ The connector supports PKCE S256, dynamic client registration, optional write ac
 npm install
 npm test
 npm run smoke:list-tools
+npm run smoke:live-tool
 npm run smoke:packed
 npm run release:check
 npm pack --dry-run

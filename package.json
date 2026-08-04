@@ -23,6 +23,7 @@
     "test": "node --test test/*.test.mjs worker/test/*.test.mjs",
     "presmoke:list-tools": "npm run deps:ensure",
     "smoke:list-tools": "node scripts/smoke-list-tools.mjs",
+    "smoke:live-tool": "node scripts/smoke-live-tool.mjs",
     "presmoke:packed": "npm run deps:ensure",
     "smoke:packed": "node scripts/smoke-packed-install.mjs",
     "sync:plugin": "node scripts/sync-plugin-metadata.mjs",

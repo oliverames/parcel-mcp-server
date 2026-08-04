@@ -23,6 +23,7 @@ jobs:
       - run: npm test
       - run: npm run release:check:registry
       - run: npm run smoke:list-tools
+      - run: npm run smoke:live-tool
       - run: npm run smoke:packed
       - name: Verify tag matches package version
         env: { TAG: "${{ github.ref_name }}" }

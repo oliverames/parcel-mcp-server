@@ -18,6 +18,14 @@ export async function saveApiKey(kv, keyHash, tokenKey, apiKey, secret) { const 
 export async function loadApiKey(kv, keyHash, tokenKey, secret) { const storageKey = credentialStorageKey(keyHash, tokenKey); const sealed = await kv.get(storageKey); if (!sealed) throw new Error("The stored Parcel credential is missing. Reconnect the MCP client."); return (await decryptStoredJson(secret, storageKey, sealed)).api_key; }
 export async function deleteApiKeys(kv, keyHash) { const listed = await kv.list({ prefix: `parcel:key:${keyHash}:` }); await Promise.all(listed.keys.map((item) => kv.delete(item.name))); return listed.keys.length; }
 export function isAllowedKeyHash(env, hash) { const allowed = (env.ALLOWED_PARCEL_KEY_HASHES || "").split(/[\s,]+/).map((item) => item.trim().toLowerCase()).filter(Boolean); return allowed.length === 0 || allowed.includes(hash.toLowerCase()); }
+export function requestedScopes(value) {
+  const source = Array.isArray(value) ? value : String(value || "").split(/\s+/);
+  return [...new Set(source.map((scope) => String(scope).trim()).filter((scope) => scope === "read" || scope === "write"))];
+}
+export function grantedScopes(requested, allowWrites) {
+  const scopes = requestedScopes(requested);
+  return scopes.filter((scope) => scope !== "write" || allowWrites);
+}
 export async function validateParcelApiKey(apiKey, fetchImpl = fetch) {
   const response = await fetchImpl("https://api.parcel.app/external/deliveries/?filter_mode=active", { headers: { Accept: "application/json", "api-key": apiKey }, redirect: "manual" });
   if (response.status >= 300 && response.status < 400) throw new Error("Parcel redirected the validation request.");

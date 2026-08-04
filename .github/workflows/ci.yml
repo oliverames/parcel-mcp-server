@@ -73,3 +73,5 @@ jobs:
       - run: npm ci --prefix worker --no-audit --no-fund
       - run: npm audit --prefix worker --omit=dev --audit-level=high
       - run: npm test --prefix worker
+      - name: Bundle the production Worker entry point
+        run: npm run check:bundle --prefix worker

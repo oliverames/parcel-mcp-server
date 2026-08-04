@@ -8,5 +8,5 @@
   "repository": "https://github.com/oliverames/parcel-mcp-server",
   "license": "MIT",
   "keywords": ["mcp", "parcel", "delivery", "tracking", "shipping"],
-  "mcpServers": "../.mcp.json"
+  "mcpServers": "./.mcp.json"
 }

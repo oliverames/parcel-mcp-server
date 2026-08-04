@@ -7,7 +7,7 @@
   "repository": "https://github.com/oliverames/parcel-mcp-server",
   "keywords": ["mcp", "parcel", "delivery", "tracking", "shipping"],
   "category": "productivity",
-  "mcpServers": "./mcp.json",
+  "mcpServers": "./.codex-plugin/mcp.json",
   "interface": {
     "displayName": "Parcel",
     "shortDescription": "Track deliveries and add packages to Parcel.",
@@ -18,8 +18,8 @@
     "websiteURL": "https://github.com/oliverames/parcel-mcp-server#readme",
     "defaultPrompt": ["Show my active Parcel deliveries.", "Which package is out for delivery?", "Add this tracking number to Parcel with a description."],
     "brandColor": "#3478F6",
-    "composerIcon": "../assets/icon.png",
-    "logo": "../assets/icon.png"
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
   },
   "license": "MIT"
 }

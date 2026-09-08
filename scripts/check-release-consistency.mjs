@@ -9,7 +9,7 @@ const pkg = read("package.json");
 const pluginName = "parcel-mcp-server";
 const problems = [];
 for (const file of [".claude-plugin/plugin.json", "codex/.codex-plugin/plugin.json", ".hermes-plugin/plugin.json", ".antigravity-plugin/plugin.json"]) if (read(file).version !== pkg.version) problems.push(`${file}: version mismatch`);
-for (const file of [".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json", ".hermes-plugin/marketplace.json", ".antigravity-plugin/marketplace.json"]) {
+for (const file of [".hermes-plugin/marketplace.json", ".antigravity-plugin/marketplace.json"]) {
   const plugin = (read(file).plugins || []).find((item) => item.name === pluginName);
   if (!plugin || plugin.version !== pkg.version) problems.push(`${file}: plugin version mismatch`);
 }

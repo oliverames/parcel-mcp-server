@@ -7,7 +7,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const pkg = read("package.json");
 const pluginName = "parcel-mcp-server";
 for (const file of [".claude-plugin/plugin.json", "codex/.codex-plugin/plugin.json", ".hermes-plugin/plugin.json", ".antigravity-plugin/plugin.json"]) update(file, (json) => { json.version = pkg.version; });
-for (const file of [".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json", ".hermes-plugin/marketplace.json", ".antigravity-plugin/marketplace.json"]) update(file, (json) => { for (const plugin of json.plugins || []) if (plugin.name === pluginName) plugin.version = pkg.version; });
+for (const file of [".hermes-plugin/marketplace.json", ".antigravity-plugin/marketplace.json"]) update(file, (json) => { for (const plugin of json.plugins || []) if (plugin.name === pluginName) plugin.version = pkg.version; });
 for (const file of [".mcp.json", "codex/.codex-plugin/mcp.json", ".hermes-plugin/mcp.json", ".antigravity-plugin/mcp_config.json"]) update(file, (json) => {
   const server = json.mcpServers?.[pluginName] || json[pluginName];
   const index = server?.args?.findIndex((arg) => typeof arg === "string" && arg.startsWith("@oliverames/"));

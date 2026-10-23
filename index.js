@@ -168,6 +168,11 @@ function errorResult(message) {
   return { isError: true, content: [{ type: "text", text: `Parcel error: ${message}` }] };
 }
 
+// Parcel's catalog maps codes to names; since October 2026 each value is { name } instead of a string.
+function normalizeCarrierNames(catalog) {
+  return Object.fromEntries(Object.entries(catalog).map(([code, value]) => [code, typeof value === "string" ? value : value?.name ?? code]));
+}
+
 function addStatusLabels(payload) {
   return {
     ...payload,
@@ -206,7 +211,7 @@ export function createParcelApiClient({ getApiKey, fetchImpl = globalThis.fetch,
   return {
     listDeliveries: (filterMode = "recent") => request("/external/deliveries/", { query: { filter_mode: filterMode } }).then(addStatusLabels),
     addDelivery: (delivery) => request("/external/add-delivery/", { method: "POST", body: delivery }),
-    listCarriers: () => request("/external/supported_carriers.json", { authenticated: false }),
+    listCarriers: () => request("/external/supported_carriers.json", { authenticated: false }).then(normalizeCarrierNames),
   };
 }
 

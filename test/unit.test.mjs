@@ -44,6 +44,11 @@ test("carrier catalog is unauthenticated", async () => {
   assert.equal(headers["api-key"], undefined);
 });
 
+test("carrier catalog accepts { name } values", async () => {
+  const client = createParcelApiClient({ fetchImpl: async () => new Response(JSON.stringify({ fedex: { name: "FedEx" }, ups: "UPS" }), { status: 200 }) });
+  assert.deepEqual(await client.listCarriers(), { fedex: "FedEx", ups: "UPS" });
+});
+
 test("API failures use Parcel's error message and never expose the key", async () => {
   const client = createParcelApiClient({ getApiKey: async () => "live-secret", fetchImpl: async () => new Response(JSON.stringify({ success: false, error_message: "Invalid tracking number" }), { status: 400 }) });
   await assert.rejects(() => client.addDelivery({}), /Invalid tracking number/);

@@ -1,5 +1,15 @@
 # Worklog
 
+## 2026-10-23 - Security review
+
+**What changed**: `e922b96` makes the hosted consent form check `ALLOWED_PARCEL_KEY_HASHES` before validating a submitted key with Parcel. Before, anyone could drive unthrottled Parcel requests through the Worker and learn whether a key was valid. `711feb1` moves the root lockfile to zod 4.6.7 (GHSA-mrhx-c7xc-m3w5) and `body-parser` 2.4.0 (GHSA-27r3-jxmh-p828). The Worker bundles the root `index.js` with the root zod, so this also covers the hosted connector's tool validation.
+
+**Verification**: `npm test` passed 23 root and Worker tests, including a new one that fails against the old handler. `release:check`, `smoke:list-tools`, the Worker bundle dry run, and both production audits passed with 0 vulnerabilities.
+
+**Left off at**: Both fixes reach parcel.amesvt.com only after a Worker deploy, and the npm package only after a release.
+
+---
+
 ## 2026-10-23 - Security dependency updates and connector redeploy
 
 **What changed**: `2a71d76` moved the Worker from `agents ~0.17.4`, which pinned `@modelcontextprotocol/sdk` 1.29.0, to `agents ~0.28.1` with SDK 1.32.1. That clears the SDK session-binding, OAuth credential, cross-origin redirect and request-size advisories, plus `proxy-addr` (critical), `fast-uri`, `qs`, `hono`, `ip-address`, `undici`, `sharp` and `wrangler`. `7df581f` fixed the carrier tools after Parcel changed `supported_carriers.json` values from strings to `{ name }` objects, which had made `parcel_find_carriers` miss display names and `parcel_list_carriers` print `[object Object]`.

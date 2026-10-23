@@ -42,9 +42,11 @@ app.post("/authorize", async (c) => {
   const granted = grantedScopes(requested, allowWrites);
   if (granted.length === 0) return c.html(layout("Connection failed", messagePage("Connection failed", "The client did not request a supported scope.")), 400);
   const writesEnabled = granted.includes("write");
-  try { await validateParcelApiKey(apiKey); } catch (error) { return c.html(layout("Connection failed", messagePage("Parcel rejected the API key", error.message)), 401); }
+  // Check the allowlist before Parcel sees the key, so this public form cannot
+  // be used to make unthrottled Parcel requests or to test arbitrary keys.
   const keyHash = await sha256(apiKey);
   if (!isAllowedKeyHash(c.env, keyHash)) return c.html(layout("Not authorized", messagePage("Not authorized", "This private connector does not allow that Parcel API key.")), 403);
+  try { await validateParcelApiKey(apiKey); } catch (error) { return c.html(layout("Connection failed", messagePage("Parcel rejected the API key", error.message)), 401); }
   const tokenKey = randomToken(16);
   await saveApiKey(c.env.OAUTH_KV, keyHash, tokenKey, apiKey, c.env.DATA_ENCRYPTION_KEY);
   const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({ request: oauthRequest, userId: keyHash, metadata: { label: "Parcel" }, scope: granted, props: { parcelKeyHash: keyHash, tokenKey, writesEnabled } });

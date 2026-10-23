@@ -33,4 +33,20 @@ test("consent shows requested scopes and never offers unrequested write access",
   const readWrite = consentPage({ clientName: "client", payload: "p", signature: "s", requestedScopes: ["read", "write"] });
   assert.match(readWrite, /name="allow_writes"/);
 });
+test("a key outside the allowlist is refused before Parcel is called", async () => {
+  const payload = btoa(JSON.stringify({ clientId: "c", redirectUri: "https://client.example/cb", scope: ["read"] }));
+  const signature = await hmacSign(env.COOKIE_ENCRYPTION_KEY, payload);
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error("Parcel must not be called"); };
+  try {
+    const response = await ParcelHandler.request("https://parcel.amesvt.com/authorize", {
+      method: "POST",
+      body: new URLSearchParams({ payload, signature, api_key: "someone-elses-key" }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    }, { ...env, ALLOWED_PARCEL_KEY_HASHES: await sha256("owner-key") });
+    assert.equal(response.status, 403);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
 test("health, privacy, and icon routes are public", async () => { assert.equal((await ParcelHandler.request("https://parcel.amesvt.com/health", {}, env)).status, 200); assert.equal((await ParcelHandler.request("https://parcel.amesvt.com/privacy", {}, env)).status, 200); const icon = await ParcelHandler.request("https://parcel.amesvt.com/icon.svg", {}, env); assert.equal(icon.status, 200); assert.match(icon.headers.get("content-type"), /image\/svg\+xml/); });

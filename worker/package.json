@@ -5,6 +5,6 @@
   "description": "Hosted OAuth remote MCP connector for Parcel on Cloudflare Workers",
   "type": "module",
   "scripts": { "dev": "wrangler dev", "deploy": "wrangler deploy", "check:bundle": "wrangler deploy --dry-run --outdir dist", "test": "node --test test/*.test.mjs", "types": "wrangler types" },
-  "dependencies": { "@cloudflare/workers-oauth-provider": "~0.8.1", "agents": "~0.17.4", "hono": "^4.12.27" },
+  "dependencies": { "@cloudflare/workers-oauth-provider": "~0.8.1", "agents": "~0.28.1", "hono": "^4.12.27" },
   "devDependencies": { "wrangler": "^4.113.0" }
 }

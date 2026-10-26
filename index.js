@@ -7,6 +7,7 @@ import path from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { captureFatalError, captureToolError, errorReportingEnabled, flushErrorReporting, initErrorReporting } from "./lib/error-reporting.mjs";
 
 export const VERSION = "1.0.0";
 export const PARCEL_API_ORIGIN = "https://api.parcel.app";
@@ -155,6 +156,29 @@ function redact(value) {
   return String(value).replace(/(api-key\s*[:=]\s*)[^\s,;]+/gi, "$1[REDACTED]").replace(/(PARCEL_API_KEY\s*[:=]\s*)[^\s,;]+/gi, "$1[REDACTED]");
 }
 
+// Errors the caller can act on (no API key, an unknown tracking number,
+// Parcel's own rejection of a request) are not defects and are never
+// reported. ParcelApiError carries the HTTP status of a failed response.
+class ParcelUserError extends Error {
+  name = "ParcelUserError";
+}
+
+class ParcelApiError extends Error {
+  name = "ParcelApiError";
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
+
+// Report unexpected failures only: code defects, timeouts, network errors,
+// redirects, malformed responses, and Parcel 5xx answers.
+function shouldReportToolError(error) {
+  if (error instanceof ParcelUserError) return false;
+  if (error instanceof ParcelApiError) return !(error.status >= 400 && error.status < 500);
+  return true;
+}
+
 function normalizeError(error) {
   if (error?.name === "AbortError") return "Parcel API request timed out. Try again.";
   return redact(error?.message || String(error));
@@ -191,7 +215,7 @@ export function createParcelApiClient({ getApiKey, fetchImpl = globalThis.fetch,
     const headers = { Accept: "application/json" };
     if (authenticated) {
       const key = await getApiKey?.();
-      if (!hasText(key)) throw new Error("PARCEL_API_KEY is not configured. Call parcel_auth_status for setup instructions.");
+      if (!hasText(key)) throw new ParcelUserError("PARCEL_API_KEY is not configured. Call parcel_auth_status for setup instructions.");
       headers["api-key"] = key.trim();
     }
     if (body !== undefined) headers["Content-Type"] = "application/json";
@@ -199,12 +223,14 @@ export function createParcelApiClient({ getApiKey, fetchImpl = globalThis.fetch,
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetchImpl(url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal, redirect: "manual" });
-      if (response.status >= 300 && response.status < 400) throw new Error(`Refusing Parcel API redirect (${response.status}).`);
+      if (response.status >= 300 && response.status < 400) throw new ParcelApiError(`Refusing Parcel API redirect (${response.status}).`, response.status);
       const raw = await response.text();
-      if (Buffer.byteLength(raw, "utf8") > MAX_RESPONSE_BYTES) throw new Error("Parcel API response exceeded the 8 MiB safety limit.");
+      if (Buffer.byteLength(raw, "utf8") > MAX_RESPONSE_BYTES) throw new ParcelApiError("Parcel API response exceeded the 8 MiB safety limit.", response.status);
       let payload;
-      try { payload = raw ? JSON.parse(raw) : {}; } catch { throw new Error(`Parcel API returned non-JSON data (HTTP ${response.status}).`); }
-      if (!response.ok || payload.success === false) throw new Error(payload.error_message || `Parcel API request failed with HTTP ${response.status}.`);
+      try { payload = raw ? JSON.parse(raw) : {}; } catch { throw new ParcelApiError(`Parcel API returned non-JSON data (HTTP ${response.status}).`, response.status); }
+      const failure = payload.error_message || `Parcel API request failed with HTTP ${response.status}.`;
+      if (!response.ok) throw new ParcelApiError(failure, response.status);
+      if (payload.success === false) throw new ParcelUserError(failure);
       return payload;
     } finally { clearTimeout(timer); }
   }
@@ -224,6 +250,10 @@ export function createParcelServer(options = {}) {
   const getApiKey = options.getApiKey || (async () => options.apiKey);
   const hasCredentials = options.hasCredentials ?? hasText(options.apiKey);
   const writesEnabled = options.writesEnabled ?? false;
+  // Called with (toolName, error, details) when a tool fails unexpectedly.
+  // Only the stdio entry point passes one; the hosted Worker does not, and
+  // tool arguments are never passed.
+  const onToolError = options.onToolError || null;
   const api = options.api || createParcelApiClient({ getApiKey, fetchImpl: options.fetchImpl, timeoutMs: options.timeoutMs });
   const serverInfo = options.serverInfo || { name: "parcel-mcp-server", version: VERSION };
   const instructions = [
@@ -240,7 +270,12 @@ export function createParcelServer(options = {}) {
     catalog.set(name, { write, config });
     if (write && !writesEnabled) return;
     server.registerTool(name, config, async (params) => {
-      try { return await handler(params); } catch (error) { return errorResult(normalizeError(error)); }
+      try { return await handler(params); } catch (error) {
+        if (onToolError && shouldReportToolError(error)) {
+          try { onToolError(name, error, { httpStatus: error instanceof ParcelApiError ? error.status : undefined }); } catch { /* Reporting must never change a tool's result. */ }
+        }
+        return errorResult(normalizeError(error));
+      }
     });
   }
 
@@ -289,7 +324,7 @@ export function createParcelServer(options = {}) {
   }, async ({ tracking_number, filter_mode, response_format }) => {
     const data = await api.listDeliveries(filter_mode);
     const delivery = (data.deliveries || []).find((item) => item.tracking_number === tracking_number);
-    if (!delivery) throw new Error(`Tracking number ${tracking_number} was not found in the ${filter_mode} delivery list.`);
+    if (!delivery) throw new ParcelUserError(`Tracking number ${tracking_number} was not found in the ${filter_mode} delivery list.`);
     const output = { success: true, delivery };
     if (response_format === "json") return textResult(output);
     const lines = [`# ${delivery.description || delivery.tracking_number}`, `- Tracking: ${delivery.tracking_number}`, `- Carrier: ${delivery.carrier_code}`, `- Status: ${delivery.status} (${delivery.status_code})`];
@@ -341,19 +376,37 @@ export function createParcelServer(options = {}) {
   return { server, api, toolCatalog: catalog, instructions };
 }
 
+// Optional Sentry reporting for the stdio server; a no-op unless SENTRY_DSN
+// is set, and never active in the Worker.
+if (!IS_WORKER) await initErrorReporting({ release: `mcp-server-for-parcel@${VERSION}` });
+
 const runtimeConfig = IS_WORKER ? null : resolveParcelRuntimeConfig();
 const defaultInstance = createParcelServer({
   apiKey: runtimeConfig?.apiKey,
   hasCredentials: hasText(runtimeConfig?.apiKey),
   writesEnabled: runtimeConfig?.writesEnabled,
   runtime: runtimeConfig || undefined,
+  onToolError: errorReportingEnabled() ? captureToolError : null,
 });
 
 export const server = defaultInstance.server;
 
 function installProcessGuards() {
-  process.on("uncaughtException", (error) => console.error(redact(error?.stack || error)));
-  process.on("unhandledRejection", (error) => console.error(redact(error?.stack || error)));
+  process.on("uncaughtException", (error) => {
+    console.error(redact(error?.stack || error));
+    captureFatalError("uncaughtException", error);
+  });
+  process.on("unhandledRejection", (error) => {
+    console.error(redact(error?.stack || error));
+    captureFatalError("unhandledRejection", error);
+  });
+  // Signal handlers replace Node's default termination, so install them only
+  // when there are queued Sentry events to flush.
+  if (errorReportingEnabled()) {
+    const exitAfterFlush = (code) => { flushErrorReporting(2000).finally(() => process.exit(code)); };
+    process.once("SIGTERM", () => exitAfterFlush(143));
+    process.once("SIGINT", () => exitAfterFlush(130));
+  }
 }
 
 if (!IS_WORKER && process.env.PARCEL_MCP_NO_AUTOSTART !== "1") {

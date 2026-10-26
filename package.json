@@ -14,7 +14,7 @@
     "mcp-server-for-parcel": "index.js",
     "parcel-mcp-server": "index.js"
   },
-  "files": ["index.js", "scripts/", "assets/icon.png", "docs/"],
+  "files": ["index.js", "lib/", "scripts/", "assets/icon.png", "docs/"],
   "engines": { "node": ">=18" },
   "scripts": {
     "start": "node index.js",
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "@sentry/node": "11.9.0",
     "zod": "^4.4.3"
   }
 }

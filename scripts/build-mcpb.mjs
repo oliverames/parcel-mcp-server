@@ -23,6 +23,7 @@ const manifest = {
 fs.rmSync(stage, { recursive: true, force: true }); fs.mkdirSync(stage, { recursive: true });
 fs.writeFileSync(path.join(stage, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 for (const file of ["index.js", "package.json", "package-lock.json", "LICENSE", "README.md"]) fs.copyFileSync(path.join(root, file), path.join(stage, file));
+fs.cpSync(path.join(root, "lib"), path.join(stage, "lib"), { recursive: true });
 fs.copyFileSync(path.join(root, "assets/icon.png"), path.join(stage, "icon.png"));
 execFileSync("npm", ["ci", "--omit=dev", "--no-audit", "--no-fund"], { cwd: stage, stdio: "inherit" });
 fs.rmSync(output, { force: true }); execFileSync("zip", ["-qr", output, "."], { cwd: stage }); fs.rmSync(stage, { recursive: true, force: true });

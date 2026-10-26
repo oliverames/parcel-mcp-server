@@ -77,6 +77,12 @@ The repository includes native manifests for each host. The generic configuratio
 
 Leave `PARCEL_ALLOW_WRITES` empty for a read-only server.
 
+### Error reporting
+
+Error reporting is off by default. If you set `SENTRY_DSN`, the local server sends unexpected tool failures, Parcel 5xx responses, and fatal errors to that Sentry project; without it, `@sentry/node` is never loaded. Reporting needs Node 20.19 or newer and is skipped quietly on older runtimes.
+
+Each report carries only the error type, a fixed message, stack frames with package-relative paths, the tool name, and the HTTP status of a failed Parcel response. Tracking numbers, package descriptions, carrier events, locations, postcodes, email addresses, tool arguments, error messages, Parcel responses, breadcrumbs, user data, and request data are removed before anything is sent. A missing API key, an unknown tracking number, and Parcel's own 4xx or validation answers are not reported. The hosted connector does not use this setting.
+
 ## Hosted Cloudflare connector
 
 The `worker/` directory provides an OAuth 2.1 protected Streamable HTTP endpoint at `https://parcel.amesvt.com/mcp`, plus legacy SSE for older clients. During authorization, the connector asks for a Parcel API key, validates it against Parcel, encrypts it with AES-GCM, and stores it per connection. The key never enters the connector's OAuth token or MCP Durable Object state.
@@ -101,7 +107,7 @@ The packed-install test installs the actual tarball and launches both declared b
 
 ## Security and privacy
 
-See [SECURITY.md](SECURITY.md) and [the hosted connector privacy notice](docs/privacy.md). Do not commit Parcel API keys. If one is exposed, revoke it through Parcel Web Access and generate a replacement.
+See [SECURITY.md](SECURITY.md), [the hosted connector privacy notice](docs/privacy.md), and [Error reporting](#error-reporting) for the optional local Sentry setting. Do not commit Parcel API keys. If one is exposed, revoke it through Parcel Web Access and generate a replacement.
 
 ## License
 

@@ -1,6 +1,6 @@
 {
   "name": "@oliverames/mcp-server-for-parcel",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "MCP server for Parcel delivery tracking, with local stdio and hosted Cloudflare support",
   "license": "MIT",
   "author": "Oliver Ames",
@@ -15,7 +15,7 @@
     "parcel-mcp-server": "index.js"
   },
   "files": ["index.js", "lib/", "scripts/", "assets/icon.png", "docs/"],
-  "engines": { "node": ">=18" },
+  "engines": { "node": ">=20" },
   "scripts": {
     "start": "node index.js",
     "deps:ensure": "node --input-type=module -e \"await import('@modelcontextprotocol/sdk/server/mcp.js')\" >/dev/null 2>&1 || npm ci --silent --no-audit --no-fund",

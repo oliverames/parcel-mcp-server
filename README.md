@@ -39,7 +39,7 @@ The add tool is not advertised unless `PARCEL_ALLOW_WRITES=1`. This prevents an 
 
 ## Local installation
 
-Generate an API key at [Parcel Web Access](https://web.parcelapp.net/), then use one of these credential methods:
+Use Node.js 20 or newer. Generate an API key at [Parcel Web Access](https://web.parcelapp.net/), then use one of these credential methods:
 
 ```bash
 export PARCEL_API_KEY="your-parcel-api-key"
@@ -103,7 +103,7 @@ npm run release:check
 npm pack --dry-run
 ```
 
-The packed-install test installs the actual tarball and launches both declared bin names through npm's relative symlinks. CI tests Node 18, 20, and 22, audits dependencies, scans secrets, and tests the Worker.
+The packed-install test installs the actual tarball and launches both declared bin names through npm's relative symlinks. CI tests Node 20 and 22, audits dependencies, scans secrets, and tests the Worker.
 
 ## Security and privacy
 

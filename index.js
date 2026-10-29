@@ -9,7 +9,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { captureFatalError, captureToolError, errorReportingEnabled, flushErrorReporting, initErrorReporting } from "./lib/error-reporting.mjs";
 
-export const VERSION = "1.0.0";
+export const VERSION = "2.0.0";
 export const PARCEL_API_ORIGIN = "https://api.parcel.app";
 export const STATUS_LABELS = Object.freeze({
   0: "delivered",

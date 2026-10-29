@@ -7,7 +7,7 @@ process.env.PARCEL_DISABLE_AGENT_CONFIG_FALLBACK = "1";
 const { createParcelApiClient, createParcelServer, STATUS_LABELS, VERSION } = await import("../index.js");
 
 test("exports stable metadata and every documented status", () => {
-  assert.equal(VERSION, "1.0.0");
+  assert.equal(VERSION, "2.0.0");
   assert.deepEqual(Object.keys(STATUS_LABELS).map(Number), [0, 1, 2, 3, 4, 5, 6, 7, 8]);
 });
 

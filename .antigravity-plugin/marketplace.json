@@ -4,5 +4,5 @@
   "version": "1.0.0",
   "description": "Standalone Parcel delivery-tracking MCP connector marketplace",
   "owner": { "name": "Oliver Ames", "email": "oliverames@users.noreply.github.com" },
-  "plugins": [{ "name": "parcel-mcp-server", "displayName": "Parcel", "description": "Parcel MCP connector for deliveries, tracking histories, carrier discovery, and package intake.", "version": "1.0.0", "author": { "name": "Oliver Ames", "email": "oliverames@gmail.com", "url": "https://github.com/oliverames" }, "homepage": "https://github.com/oliverames/parcel-mcp-server#readme", "repository": "https://github.com/oliverames/parcel-mcp-server", "license": "MIT", "keywords": ["mcp", "parcel", "delivery", "tracking", "shipping"], "source": "./", "category": "productivity" }]
+  "plugins": [{ "name": "parcel-mcp-server", "displayName": "Parcel", "description": "Parcel MCP connector for deliveries, tracking histories, carrier discovery, and package intake.", "version": "2.0.0", "author": { "name": "Oliver Ames", "email": "oliverames@gmail.com", "url": "https://github.com/oliverames" }, "homepage": "https://github.com/oliverames/parcel-mcp-server#readme", "repository": "https://github.com/oliverames/parcel-mcp-server", "license": "MIT", "keywords": ["mcp", "parcel", "delivery", "tracking", "shipping"], "source": "./", "category": "productivity" }]
 }

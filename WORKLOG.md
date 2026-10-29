@@ -1,5 +1,15 @@
 # Worklog
 
+## 2026-10-28 - Adapter security patch and existing Worker update
+
+**What changed**: Updated the root `@hono/node-server` lock entry from 2.1.0 to 2.1.5 for [GHSA-rmxm-3fg6-px4f](https://github.com/advisories/GHSA-rmxm-3fg6-px4f); the Worker lock already had 2.1.5. Version 2.0.0 corrects the declared Node minimum to 20, which the existing adapter already required, and aligns the server, host manifests and README. CI keeps its Node 20 and 22 checks, and runs for source, release metadata and test changes.
+
+**Verification**: All 28 root/Worker tests, the local stdio catalog, release consistency, Worker bundle and both audits pass with zero vulnerabilities. Every GitHub job passed on `b8204be`, including the public carrier catalog and packed-install probes. No credentialed Parcel operation ran.
+
+**Left off at**: Source `b8204be` is deployed to the existing `parcel-mcp-connector` at 100% as `f5209efb-2bc2-4958-b08b-1b6335798d04`. Rollback is `c186934d-fd26-4005-adde-8392020033af`. Eight unauthenticated edge probes pass: health/landing, missing and bad bearer tokens, hostile and allowed origins, and OAuth/resource metadata. PKCE is S256 only and security headers are present. Runtime settings, migration tag, variables and all binding identities match the previous version. Public npm publication remains part of the final release workflow; signed-in client/tool acceptance remains unverified.
+
+---
+
 ## 2026-10-23 - Security review
 
 **What changed**: `e922b96` makes the hosted consent form check `ALLOWED_PARCEL_KEY_HASHES` before validating a submitted key with Parcel. Before, anyone could drive unthrottled Parcel requests through the Worker and learn whether a key was valid. `711feb1` moves the root lockfile to zod 4.6.7 (GHSA-mrhx-c7xc-m3w5) and `body-parser` 2.4.0 (GHSA-27r3-jxmh-p828). The Worker bundles the root `index.js` with the root zod, so this also covers the hosted connector's tool validation.

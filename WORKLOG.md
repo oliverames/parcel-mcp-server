@@ -1,5 +1,17 @@
 # Worklog
 
+## 2026-10-29 - Verify npm delivery and recent-change checks
+
+**What changed**: Verified the public npm registry serves version 2.0.0, matching the committed package version. Both full maintenance runs found this version already up to date. No new upload ran. The prior publication-pending status is resolved by the registry check.
+
+**Decisions made**: Reused this session's passing `npm test` result: 28 root/Worker tests, with zero failures. No source changed in this documentation update.
+
+**Left off at**: The existing Worker deployment and rollback receipt remain as recorded below; no new Worker deployment or credentialed Parcel operation ran. The final full maintenance run passed all eight stages.
+
+**Open questions**: Still open: Signed-in client/tool acceptance remains unverified.
+
+---
+
 ## 2026-10-28 - Adapter security patch and existing Worker update
 
 **What changed**: Updated the root `@hono/node-server` lock entry from 2.1.0 to 2.1.5 for [GHSA-rmxm-3fg6-px4f](https://github.com/advisories/GHSA-rmxm-3fg6-px4f); the Worker lock already had 2.1.5. Version 2.0.0 corrects the declared Node minimum to 20, which the existing adapter already required, and aligns the server, host manifests and README. CI keeps its Node 20 and 22 checks, and runs for source, release metadata and test changes.
